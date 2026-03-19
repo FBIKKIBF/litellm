@@ -1153,8 +1153,8 @@ class ModelResponseIterator:
 
         if str_line.startswith("data:"):
             chunk_str = str_line[5:].strip()
-            # Models like Deepseek might return "data: [DONE]" here which is not a valid JSON input.
-            # We can just ignore these chunks.
+            # Models like Deepseek might return "data: [DONE]" here which is not a
+            # valid JSON input. We can just ignore these chunks.
             try:
                 data_json = json.loads(chunk_str)
                 return self.chunk_parser(chunk=data_json)
