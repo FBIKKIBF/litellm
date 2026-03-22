@@ -235,6 +235,8 @@ def anthropic_messages_handler(
         container: Container config with skills for code execution
     """
     from litellm.types.utils import LlmProviders
+    print("########outermost anthropic_messages_handler")
+
 
     metadata = validate_anthropic_api_metadata(metadata)
 
@@ -299,6 +301,7 @@ def anthropic_messages_handler(
                 provider=litellm.LlmProviders(custom_llm_provider),
             )
         )
+    print("anthropic_messages_provider_config: ", anthropic_messages_provider_config)
     if anthropic_messages_provider_config is None:
         # Route to Responses API for OpenAI / Azure, chat/completions for everything else.
         _shared_kwargs = dict(
@@ -323,9 +326,11 @@ def anthropic_messages_handler(
             **kwargs,
         )
         if _should_route_to_responses_api(custom_llm_provider):
+            print("###LiteLLMMessagesToResponsesAPIHandler")
             return LiteLLMMessagesToResponsesAPIHandler.anthropic_messages_handler(
                 **_shared_kwargs
             )
+        print("###LiteLLMMessagesToCompletionTransformationHandler")
         return (
             LiteLLMMessagesToCompletionTransformationHandler.anthropic_messages_handler(
                 **_shared_kwargs

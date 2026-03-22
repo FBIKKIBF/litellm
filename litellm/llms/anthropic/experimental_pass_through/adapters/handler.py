@@ -1,3 +1,5 @@
+import traceback
+
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -215,6 +217,8 @@ class LiteLLMMessagesToCompletionTransformationHandler:
         **kwargs,
     ) -> Union[AnthropicMessagesResponse, AsyncIterator]:
         """Handle non-Anthropic models asynchronously using the adapter"""
+        print("########async_anthropic_messages_handler")
+        traceback.print_stack()
         (
             completion_kwargs,
             tool_name_mapping,
@@ -246,10 +250,13 @@ class LiteLLMMessagesToCompletionTransformationHandler:
                     tool_name_mapping=tool_name_mapping,
                 )
             )
+            print("########using stream")
+            print(AnthropicMessagesResponse)
             if transformed_stream is not None:
                 return transformed_stream
             raise ValueError("Failed to transform streaming response")
         else:
+            print("########using non-stream")
             anthropic_response = ANTHROPIC_ADAPTER.translate_completion_output_params(
                 cast(ModelResponse, completion_response),
                 tool_name_mapping=tool_name_mapping,
@@ -282,6 +289,7 @@ class LiteLLMMessagesToCompletionTransformationHandler:
         Coroutine[Any, Any, Union[AnthropicMessagesResponse, AsyncIterator[Any]]],
     ]:
         """Handle non-Anthropic models using the adapter."""
+        print("########anthropic_messages_handler")
         if _is_async is True:
             return LiteLLMMessagesToCompletionTransformationHandler.async_anthropic_messages_handler(
                 max_tokens=max_tokens,
